@@ -15,7 +15,7 @@ STORIES = {
 
 @app.get("/")
 def homepage():
-
+    """ render dropdown """
 
     return render_template("input.html", stories=STORIES.keys())
 
@@ -26,16 +26,18 @@ def get_questions():
     """Renders questions template"""
     story = request.args["stories"]
 
-
     prompts = STORIES[story].prompts
 
-    return render_template("questions.html", prompts=prompts)
+    return render_template("questions.html", prompts=prompts, story=story)
 
 
 
-@app.get("/results")
-def get_results():
-    """Renders story with user inputs"""
-    results = silly_story.generate(request.args)
+@app.get("/<story>/results")
+def get_results(story):
+    """Renders  with user inputs"""
+    # how to get story instance here
+    user_story = STORIES[story]
 
-    return render_template("results.html", results=results)
+    results = user_story.generate(request.args)
+
+    return render_template("results.html", results=results, story=story)
