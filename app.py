@@ -1,19 +1,37 @@
 from flask import Flask, render_template, request
 from flask_debugtoolbar import DebugToolbarExtension
 
-from stories import silly_story
+from stories import silly_story, excited_story
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "secret"
 
 debug = DebugToolbarExtension(app)
 
+STORIES = {
+    "silly_story": silly_story,
+    "excited_story": excited_story
+}
+
 @app.get("/")
 def homepage():
+
+
+    return render_template("input.html", stories=STORIES.keys())
+
+
+# rename endpoint
+@app.get("/questions")
+def get_questions():
     """Renders questions template"""
-    prompts = silly_story.prompts
+    story = request.args["stories"]
+
+
+    prompts = STORIES[story].prompts
 
     return render_template("questions.html", prompts=prompts)
+
+
 
 @app.get("/results")
 def get_results():
